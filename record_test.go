@@ -14,7 +14,7 @@ type TestRecord struct {
 	Updated bool   `json:"is_updated"`
 }
 
-func TestClient_listRecords(t *testing.T) {
+func TestClient_ListRecords(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -42,7 +42,7 @@ func TestClient_listRecords(t *testing.T) {
 	)
 
 	var records []TestRecord
-	err := client.listRecords("products", &records, nil)
+	err := client.ListRecords("products", &records, nil)
 	if err != nil {
 		t.Errorf("listRecords returned error: %v", err)
 	}
@@ -56,7 +56,7 @@ func TestClient_listRecords(t *testing.T) {
 	log.Printf("%v", records)
 }
 
-func TestClient_getRecord(t *testing.T) {
+func TestClient_GetRecord(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -72,7 +72,7 @@ func TestClient_getRecord(t *testing.T) {
 	)
 
 	var record TestRecord
-	err := client.getRecord("products", 1, &record, nil)
+	err := client.GetRecord("products", 1, &record, nil)
 	if err != nil {
 		t.Errorf("getRecord returned error: %v", err)
 	}
@@ -93,7 +93,7 @@ func TestClient_getRecord(t *testing.T) {
 	log.Printf("%v", record)
 }
 
-func TestClient_createRecord(t *testing.T) {
+func TestClient_CreateRecord(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -114,7 +114,7 @@ func TestClient_createRecord(t *testing.T) {
 		Name: "Test Create",
 	}
 
-	err := client.createRecord("products", &record)
+	err := client.CreateRecord("products", &record)
 	if err != nil {
 		t.Errorf("createRecord returned error: %v", err)
 	}
@@ -130,7 +130,7 @@ func TestClient_createRecord(t *testing.T) {
 	}
 }
 
-func TestClient_updateRecord(t *testing.T) {
+func TestClient_UpdateRecord(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -152,7 +152,7 @@ func TestClient_updateRecord(t *testing.T) {
 		},
 	)
 
-	err := client.updateRecord("products", record.ID, &record)
+	err := client.UpdateRecord("products", record.ID, &record)
 	if err != nil {
 		t.Errorf("updateRecord returned error: %v", err)
 	}
@@ -164,7 +164,7 @@ func TestClient_updateRecord(t *testing.T) {
 	}
 }
 
-func TestClient_deleteRecord(t *testing.T) {
+func TestClient_DeleteRecord(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -174,7 +174,7 @@ func TestClient_deleteRecord(t *testing.T) {
 		},
 	)
 
-	err := client.deleteRecord("products", 1)
+	err := client.DeleteRecord("products", 1)
 	if err != nil {
 		t.Errorf("deleteRecord returned error: %v", err)
 	}

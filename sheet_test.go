@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestClient_listSheets(t *testing.T) {
+func TestClient_ListSheets(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -23,7 +23,7 @@ func TestClient_listSheets(t *testing.T) {
 		},
 	)
 
-	sheets, err := client.listSheets()
+	sheets, err := client.ListSheets()
 	if err != nil {
 		t.Errorf("listSheets returned error: %v", err)
 	}

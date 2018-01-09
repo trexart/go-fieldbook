@@ -6,7 +6,8 @@ import (
 	"net/http"
 )
 
-func (c *Client) listSheets() ([]string, error) {
+//ListSheets returns a string slice of all sheets in book
+func (c *Client) ListSheets() ([]string, error) {
 	fullURL := fmt.Sprintf("%s", c.getURL())
 
 	req, err := http.NewRequest("GET", fullURL, nil)

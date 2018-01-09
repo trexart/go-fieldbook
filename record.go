@@ -7,7 +7,8 @@ import (
 	"net/http"
 )
 
-func (c *Client) listRecords(sheet string, records interface{}, options *QueryOptions) error {
+//ListRecords returns all records for selected sheet and query options
+func (c *Client) ListRecords(sheet string, records interface{}, options *QueryOptions) error {
 	fullURL := fmt.Sprintf("%s/%s", c.getURL(), sheet)
 
 	req, err := http.NewRequest("GET", fullURL, nil)
@@ -35,7 +36,8 @@ func (c *Client) listRecords(sheet string, records interface{}, options *QueryOp
 	return nil
 }
 
-func (c *Client) getRecord(sheet string, id int, record interface{}, options *QueryOptions) error {
+//GetRecord returns the record in the selected sheet with the id
+func (c *Client) GetRecord(sheet string, id int, record interface{}, options *QueryOptions) error {
 	fullURL := fmt.Sprintf("%s/%s/%v", c.getURL(), sheet, id)
 
 	req, err := http.NewRequest("GET", fullURL, nil)
@@ -63,7 +65,8 @@ func (c *Client) getRecord(sheet string, id int, record interface{}, options *Qu
 	return nil
 }
 
-func (c *Client) createRecord(sheet string, record interface{}) error {
+//CreateRecord adds a new record to the selected sheet
+func (c *Client) CreateRecord(sheet string, record interface{}) error {
 	fullURL := fmt.Sprintf("%s/%s", c.getURL(), sheet)
 
 	jsonStr, err := json.Marshal(record)
@@ -90,7 +93,8 @@ func (c *Client) createRecord(sheet string, record interface{}) error {
 	return nil
 }
 
-func (c *Client) updateRecord(sheet string, id int, record interface{}) error {
+//UpdateRecord uses PATCH to update only passed in fields for record identified by id in the selected sheet
+func (c *Client) UpdateRecord(sheet string, id int, record interface{}) error {
 	fullURL := fmt.Sprintf("%s/%s/%v", c.getURL(), sheet, id)
 
 	jsonStr, err := json.Marshal(record)
@@ -117,7 +121,8 @@ func (c *Client) updateRecord(sheet string, id int, record interface{}) error {
 	return nil
 }
 
-func (c *Client) deleteRecord(sheet string, id int) error {
+//DeleteRecord removes the record with id in selected sheet
+func (c *Client) DeleteRecord(sheet string, id int) error {
 	fullURL := fmt.Sprintf("%s/%s/%v", c.getURL(), sheet, id)
 
 	req, err := http.NewRequest("DELETE", fullURL, nil)
