@@ -9,40 +9,40 @@ import (
 )
 
 type TestRecord struct {
-	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Updated bool   `json:"is_updated"`
+	ID        int    `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
 func TestClient_ListRecords(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc(fmt.Sprintf("/%s/products", BOOK),
+	mux.HandleFunc(fmt.Sprintf("/%s/%s", BOOK, SHEET_NAME),
 		func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "GET")
 			fmt.Fprint(w, `[
 				{
 				  "id": 1,
-				  "name": "Test 1",
-				  "is_updated": false
+				  "first_name": "John",
+				  "last_name": "Doe"
 				},
 				{
 					"id": 2,
-					"name": "Test 2",
-					"is_updated": false
+					"first_name": "Jack",
+					"last_name": "Jackson"
 				},
 				{
 					"id": 3,
-					"name": "Test 3",
-					"is_updated": true
+					"first_name": "Jeff",
+					"last_name": "Jefferson"
 				}
 			  ]`)
 		},
 	)
 
 	var records []TestRecord
-	err := client.ListRecords("products", &records, nil)
+	err := client.ListRecords(SHEET_NAME, &records, nil)
 	if err != nil {
 		t.Errorf("listRecords returned error: %v", err)
 	}
@@ -60,19 +60,19 @@ func TestClient_GetRecord(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc(fmt.Sprintf("/%s/products/%v", BOOK, 1),
+	mux.HandleFunc(fmt.Sprintf("/%s/%s/%v", BOOK, SHEET_NAME, 1),
 		func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "GET")
 			fmt.Fprint(w, `{
 				  "id": 1,
-				  "name": "Test 1",
-				  "is_updated": false
+				  "first_name": "John",
+				  "last_name": "Doe"
 				}`)
 		},
 	)
 
 	var record TestRecord
-	err := client.GetRecord("products", 1, &record, nil)
+	err := client.GetRecord(SHEET_NAME, 1, &record, nil)
 	if err != nil {
 		t.Errorf("getRecord returned error: %v", err)
 	}
@@ -81,13 +81,13 @@ func TestClient_GetRecord(t *testing.T) {
 		t.Errorf("getRecords returned %+v, want %+v",
 			record.ID, 1)
 	}
-	if record.Name != "Test 1" {
+	if record.FirstName != "John" {
 		t.Errorf("getRecords returned %+v, want %+v",
-			record.Name, "Test 1")
+			record.FirstName, "John")
 	}
-	if record.Updated != false {
+	if record.LastName != "Doe" {
 		t.Errorf("getRecords returned %+v, want %+v",
-			record.Updated, false)
+			record.LastName, "Doe")
 	}
 
 	log.Printf("%v", record)
@@ -97,24 +97,24 @@ func TestClient_CreateRecord(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc(fmt.Sprintf("/%s/products", BOOK),
+	mux.HandleFunc(fmt.Sprintf("/%s/%s", BOOK, SHEET_NAME),
 		func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "POST")
 			var record TestRecord
 			json.NewDecoder(r.Body).Decode(&record)
 			fmt.Fprintf(w, `{
 				  "id": 4,
-				  "name": "%s",
-				  "is_updated": %v
-				}`, record.Name, record.Updated)
+				  "first_name": "%s",
+				  "last_name": "%s"
+				}`, record.FirstName, record.LastName)
 		},
 	)
 
 	record := TestRecord{
-		Name: "Test Create",
+		FirstName: "Test Create",
 	}
 
-	err := client.CreateRecord("products", &record)
+	err := client.CreateRecord(SHEET_NAME, &record)
 	if err != nil {
 		t.Errorf("createRecord returned error: %v", err)
 	}
@@ -125,8 +125,8 @@ func TestClient_CreateRecord(t *testing.T) {
 	if record.ID != 4 {
 		t.Errorf("createRecord isn't returned the correct ID")
 	}
-	if record.Name != "Test Create" {
-		t.Errorf("createRecord isn't returned the correct name")
+	if record.FirstName != "Test Create" {
+		t.Errorf("createRecord isn't returned the correct first name")
 	}
 }
 
@@ -135,31 +135,31 @@ func TestClient_UpdateRecord(t *testing.T) {
 	defer teardown()
 
 	record := TestRecord{
-		ID:   1,
-		Name: "Test Create 1",
+		ID:        1,
+		FirstName: "Test Create 1",
 	}
 
-	mux.HandleFunc(fmt.Sprintf("/%s/products/%v", BOOK, record.ID),
+	mux.HandleFunc(fmt.Sprintf("/%s/%s/%v", BOOK, SHEET_NAME, record.ID),
 		func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "PATCH")
 			var record TestRecord
 			json.NewDecoder(r.Body).Decode(&record)
 			fmt.Fprintf(w, `{
 				  "id": %v,
-				  "name": "%s",
-				  "is_updated": %v
-				}`, record.ID, record.Name, record.Updated)
+				  "first_name": "%s",
+				  "last_name": "%s"
+				}`, record.ID, record.FirstName, record.LastName)
 		},
 	)
 
-	err := client.UpdateRecord("products", record.ID, &record)
+	err := client.UpdateRecord(SHEET_NAME, record.ID, &record)
 	if err != nil {
 		t.Errorf("updateRecord returned error: %v", err)
 	}
 	if record.ID != 1 {
 		t.Errorf("updateRecord isn't returned the correct ID")
 	}
-	if record.Name != "Test Create 1" {
+	if record.FirstName != "Test Create 1" {
 		t.Errorf("updateRecord isn't returned the correct name")
 	}
 }
@@ -168,13 +168,13 @@ func TestClient_DeleteRecord(t *testing.T) {
 	setup()
 	defer teardown()
 
-	mux.HandleFunc(fmt.Sprintf("/%s/products/%v", BOOK, 1),
+	mux.HandleFunc(fmt.Sprintf("/%s/%s/%v", BOOK, SHEET_NAME, 1),
 		func(w http.ResponseWriter, r *http.Request) {
 			testMethod(t, r, "DELETE")
 		},
 	)
 
-	err := client.DeleteRecord("products", 1)
+	err := client.DeleteRecord(SHEET_NAME, 1)
 	if err != nil {
 		t.Errorf("deleteRecord returned error: %v", err)
 	}

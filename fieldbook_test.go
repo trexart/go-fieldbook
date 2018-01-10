@@ -12,7 +12,10 @@ var (
 	server *httptest.Server
 )
 
-const BOOK = "book1"
+const (
+	BOOK       = "book1"
+	SHEET_NAME = "people"
+)
 
 func setup() {
 	// test server
@@ -22,7 +25,7 @@ func setup() {
 	// github client configured to use test server
 	//client = NewClient(nil)
 	//client.BaseURL, _ = url.Parse(server.URL)
-	//client = NewClient("key-1", "pHASvYybHFSnnqWBQTWt", "5a540048e4121e0300be523e")
+	//client = NewClient("key-1", "Ndai_TA44VkFzBAXBjVO", "5a5558b4e2edea0300d38fd8e")
 	client = NewClient("", "", BOOK)
 	client.SetBaseURL(server.URL)
 }
