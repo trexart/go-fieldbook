@@ -4,26 +4,37 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 )
 
 var BASE_FIELDBOOK_URL = "https://api.fieldbook.com/v1"
 
+type Time struct {
+	time.Time
+}
+
+func (t *Time) UnmarshalJSON(b []byte) (err error) {
+	s := strings.Trim(string(b), "\"")
+	t.Time, err = time.Parse("2006-01-02", s)
+	return nil
+}
+
 type QueryOptions struct {
-	exclude []string
-	include []string
-	expand  []string
+	Exclude []string
+	Include []string
+	Expand  []string
 }
 
 func (options *QueryOptions) implement(req *http.Request) {
 	q := req.URL.Query()
-	if len(options.exclude) > 0 {
-		q.Add("exclude", strings.Join(options.exclude, ","))
+	if len(options.Exclude) > 0 {
+		q.Add("exclude", strings.Join(options.Exclude, ","))
 	}
-	if len(options.include) > 0 {
-		q.Add("include", strings.Join(options.include, ","))
+	if len(options.Include) > 0 {
+		q.Add("include", strings.Join(options.Include, ","))
 	}
-	if len(options.expand) > 0 {
-		q.Add("expand", strings.Join(options.expand, ","))
+	if len(options.Expand) > 0 {
+		q.Add("expand", strings.Join(options.Expand, ","))
 	}
 	req.URL.RawQuery = q.Encode()
 }

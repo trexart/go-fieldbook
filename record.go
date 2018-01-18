@@ -69,10 +69,11 @@ func (c *Client) GetRecord(sheet string, id int, record interface{}, options *Qu
 func (c *Client) CreateRecord(sheet string, record interface{}) error {
 	fullURL := fmt.Sprintf("%s/%s", c.getURL(), sheet)
 
-	jsonStr, err := json.Marshal(record)
+	jsonStr, err := json.Marshal(&record)
 	if err != nil {
 		return err
 	}
+	//log.Println(string(jsonStr))
 
 	req, err := http.NewRequest("POST", fullURL, bytes.NewBuffer(jsonStr))
 	if err != nil {
