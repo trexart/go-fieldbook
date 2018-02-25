@@ -74,8 +74,15 @@ Get item
 
 Create
 
+    product := &Product{
+	    Name: "Test Name",
+	}
     err = h.client.CreateRecord("products", product)
 
 Update
 
+    product := &Product{
+        ID:   5,
+	    Name: "Test Name",
+	}
     err = h.client.UpdateRecord("products", product.ID, product)
